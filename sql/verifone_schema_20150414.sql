@@ -7,7 +7,7 @@
 #
 # Host: localhost (MySQL 5.6.21)
 # Database: verifone
-# Generation Time: 2015-04-14 15:24:50 +0000
+# Generation Time: 2015-04-14 18:53:21 +0000
 # ************************************************************
 
 
@@ -28,7 +28,7 @@ DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `username` varchar(40) DEFAULT NULL,
-  `password` varchar(40) DEFAULT NULL,
+  `password` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -37,9 +37,7 @@ LOCK TABLES `users` WRITE;
 
 INSERT INTO `users` (`id`, `username`, `password`)
 VALUES
-	(1,'hello','world'),
-	(2,'oskar','password'),
-	(3,'test','test');
+	(7,'test2','$2y$10$U5DWpYyVaBuAKrqbPI/zPukHDBDKQHiAnMs6bV.e0nQtzzuzktZNq');
 
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;

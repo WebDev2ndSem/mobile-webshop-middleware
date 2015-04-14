@@ -3,6 +3,7 @@
 // Adding our config file
 require_once('../config.inc.php');
 
+
 //if posted data is not empty
 if (!empty($_POST)) {
     //If the username or password is empty when the user submits
@@ -63,6 +64,8 @@ if (!empty($_POST)) {
         $response["message"] = "I'm sorry, this username is already in use";
         die(json_encode($response));
     }
+    $password = $_POST['password'];
+    $hash = password_hash($password, PASSWORD_DEFAULT);
 
     //If we have made it here without dying, then we are in the clear to
     //create a new user.  Let's setup our new query to create a user.
@@ -72,7 +75,7 @@ if (!empty($_POST)) {
     //Again, we need to update our tokens with the actual data:
     $query_params = array(
         ':user' => $_POST['username'],
-        ':pass' => $_POST['password']
+        ':pass' => $hash
     );
 
     //time to run our query, and create the user

@@ -3,7 +3,6 @@
 //load and connect to MySQL database stuff
 require("../config.inc.php");
 
-
 if (!empty($_POST)) {
     //gets user's info based off of a username.
     $query = "
@@ -43,11 +42,15 @@ if (!empty($_POST)) {
     //fetching all the rows from the query
     $row = $stmt->fetch();
     if ($row) {
-        //if we encrypted the password, we would unencrypt it here, but in our case we just
-        //compare the two passwords
-        if ($_POST['password'] === $row['password']) {
-            $login_ok = true;
-        }
+        // Vertify password
+        $password = $_POST['password'];
+        $hash = $row['password'];
+
+        if (password_verify($password, $hash)) {
+          $login_ok = true;
+        } else {
+          }
+
     }
 
     // If the user logged in successfully, then we send them to the private members-only page

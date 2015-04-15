@@ -64,6 +64,9 @@ if (!empty($_POST)) {
         $response["message"] = "I'm sorry, this username is already in use";
         die(json_encode($response));
     }
+
+    // We hash our passwords with the PHP native password hashing API
+    // http://php.net/manual/en/faq.passwords.php#faq.passwords.bestpractice
     $password = $_POST['password'];
     $hash = password_hash($password, PASSWORD_DEFAULT);
 

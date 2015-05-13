@@ -6,7 +6,7 @@
  * are fast enough. The code below aims for ≤ 50 milliseconds stretching time,
  * which is a good baseline for systems handling interactive logins.
  */
-$timeTarget = 0.05; // 50 milliseconds 
+$timeTarget = 0.05; // 50 milliseconds
 
 $cost = 8;
 do {
@@ -16,7 +16,7 @@ do {
     $end = microtime(true);
 } while (($end - $start) < $timeTarget);
 
-echo "Appropriate Cost Found: " . $cost . "\n";
+echo "Appropriate Cost Found: " . $cost . "<br />";
 
 /**
  * In this case, we want to increase the default cost for BCRYPT to 12.
@@ -25,13 +25,14 @@ echo "Appropriate Cost Found: " . $cost . "\n";
 $options = [
     'cost' => 10,
 ];
-echo =  password_hash("test1", PASSWORD_BCRYPT, $options);
+ echo $hash = password_hash("test1", PASSWORD_BCRYPT, $options). "<br />";
+
 
 
 // TESTING
 
 
-if (password_verify('test1', $hash)) {
+if (password_verify('test', $hash)) {
     echo 'Password is valid!';
 } else {
     echo 'Invalid password.';

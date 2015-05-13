@@ -8,16 +8,18 @@ require_once 'DBconnection.php';
 $app = new \Slim\Slim();
 
 // We get the correct record based on the username entered
-$data = basicAuthentication();
+//$data = basicAuthentication();
+$data = auth2();
 // We authenticate every incoming requet with http basic authentication
-$app->add(new \Slim\Extras\Middleware\HttpBasicAuth($data['username'], $data['password']));
+//$app->add(new \Slim\Extras\Middleware\HttpBasicAuth($data['username'], $data['password']));
 
 $app->get('/users', 'listUsers');
 $app->get('/loggedin', 'welcomeUser');
 $app->get('/user/devices', 'myDevices');
 $app->get('/user/income', 'myIncome');
-$app->get('/headers', 'basicAuthentication');
+//$app->get('/headers', 'basicAuthentication');
 $app->get('/help', 'getHelp');
+//$app->get('/index.php', 'auth2');
 
 // Setting the default timezone to Danish time for functions that require this.
 date_default_timezone_set('Europe/Copenhagen');
@@ -142,6 +144,9 @@ function welcomeUser() {
 // Lists the complete users table - testing function - would never be on production
 function listUsers() {
     $app = \Slim\Slim::getInstance();
+    if ($login = False) {
+      exit('Access Denied');
+    }
     $sql = "select * FROM users";
     try {
         $db = getConnection();
@@ -159,6 +164,7 @@ function listUsers() {
 }
 
 // Authentication function to protect the Restful api
+/*
 function basicAuthentication() {
     $app = \Slim\Slim::getInstance();
 
@@ -183,5 +189,42 @@ function basicAuthentication() {
         echo '{"error":{"text":'. $e->getMessage() .'}}';
     }
 }
+*/
+function auth2() {
+  $login = null;
+  $app = \Slim\Slim::getInstance();
+  unset($username);
+  unset($password);
+  if (null !== $app->request->headers()){
+    $username = $app->request->headers("Php-Auth-User");
+    $password = $app->request->headers("Php-Auth-Pw");
+  } else {
+    $login = False;
+  }
 
+  if (isset($username, $password)){
+    $sql = "SELECT username, password FROM users WHERE username ='$username'";
+    try {
+        $db = getConnection();
+        $stmt = $db->query($sql);
+        $user = $stmt->fetchAll(PDO::FETCH_OBJ);
+        $db = null;
 
+        $hash = ($user[0]->password);
+        if (password_verify($password, $hash)) {
+            $login = True;
+        } else {
+            $login = False;
+        }
+      } catch(PDOException $e) {
+          echo '{"error":{"text":'. $e->getMessage() .'}}';
+      }
+    }
+    if ($login == False) {
+      header('WWW-Authenticate: Basic realm="Protected Area"');
+      header('HTTP/1.0 401 Unauthorized');
+      header('Content-Type: application/json; charset=utf-8');
+      die(json_encode(array('success' => 'false', 'error' => '401', 'message' => 'Unauthorized')));
+      //exit;
+    } else {}
+  }
